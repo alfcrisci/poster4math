@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Poster di matematica</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap');
+
+:root{
+  --paper:#F5EFDF;
+  --paper-deep:#EDE4CC;
+  --ink:#1E2A44;
+  --ink-soft:#4C566E;
+  --gold:#B98A3D;
+  --gold-soft:#DCC48F;
+  --terra:#AE4632;
+  --yes:#2E7D6B;
+  --bg:#DCD3B8;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Source Sans 3', sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:32px 16px 60px;
+}
+
+header{
+  width:100%;
+  max-width:900px;
+  text-align:center;
+  margin-bottom:28px;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-weight:600;
+  margin-bottom:8px;
+}
+h1{
+  font-family:'Fraunces', serif;
+  font-weight:700;
+  font-size:clamp(28px,5vw,44px);
+  letter-spacing:-0.01em;
+}
+h1 em{font-style:italic; font-weight:500; color:var(--ink-soft);}
+.subhead{
+  margin-top:8px;
+  font-size:14.5px;
+  color:var(--ink-soft);
+  line-height:1.5;
+}
+
+.carousel{
+  width:100%;
+  max-width:900px;
+  background:var(--paper);
+  border:2px solid var(--ink);
+  box-shadow:8px 8px 0 rgba(30,42,68,0.14);
+  padding:24px 24px 20px;
+}
+
+.carousel-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+  gap:12px;
+}
+.poster-title{
+  font-family:'Fraunces', serif;
+  font-weight:600;
+  font-size:19px;
+}
+.poster-count{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+
+.viewer{
+  position:relative;
+  width:100%;
+  background:var(--paper-deep);
+  border:1.5px solid var(--ink);
+  aspect-ratio: 842 / 1191; /* A3 portrait */
+  overflow:hidden;
+}
+.viewer a.preview-link{
+  display:block;
+  width:100%;
+  height:100%;
+}
+.viewer img.preview-img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  cursor:zoom-in;
+}
+.viewer .open-hint{
+  position:absolute;
+  bottom:10px;
+  left:50%;
+  transform:translateX(-50%);
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10.5px;
+  color:var(--paper);
+  background:rgba(30,42,68,0.82);
+  padding:4px 12px;
+  pointer-events:none;
+  letter-spacing:.04em;
+}
+
+.nav-btn{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:42px; height:42px;
+  border-radius:50%;
+  background:var(--ink);
+  color:var(--paper);
+  border:none;
+  cursor:pointer;
+  font-size:18px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:0.88;
+  transition:opacity .15s, transform .15s;
+  z-index:5;
+}
+.nav-btn:hover{opacity:1; transform:translateY(-50%) scale(1.06);}
+.nav-btn.prev{left:12px;}
+.nav-btn.next{right:12px;}
+
+.controls-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:16px;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.download-link{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px;
+  font-weight:600;
+  color:var(--paper);
+  background:var(--gold);
+  padding:8px 16px;
+  text-decoration:none;
+  border:1.5px solid var(--ink);
+  white-space:nowrap;
+}
+.download-link:hover{background:var(--terra);}
+
+.dots{
+  display:flex;
+  gap:8px;
+}
+.dot{
+  width:9px; height:9px;
+  border-radius:50%;
+  border:1.5px solid var(--ink);
+  background:transparent;
+  cursor:pointer;
+  padding:0;
+}
+.dot.active{background:var(--ink);}
+
+.thumb-strip{
+  display:flex;
+  gap:10px;
+  margin-top:20px;
+  overflow-x:auto;
+  padding-bottom:6px;
+}
+.thumb-strip::-webkit-scrollbar{height:6px;}
+.thumb-strip::-webkit-scrollbar-thumb{background:var(--ink-soft); border-radius:3px;}
+.thumb-item{
+  flex:0 0 auto;
+  width:64px;
+  aspect-ratio:842/1191;
+  border:2px solid transparent;
+  background:#fff;
+  cursor:pointer;
+  overflow:hidden;
+  opacity:0.6;
+  transition:opacity .15s, border-color .15s;
+}
+.thumb-item img{width:100%; height:100%; object-fit:cover; display:block;}
+.thumb-item.active{border-color:var(--gold); opacity:1;}
+.thumb-item:hover{opacity:1;}
+
+footer{
+  margin-top:26px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  text-align:center;
+}
+
+@media (max-width:600px){
+  .nav-btn{width:36px; height:36px; font-size:15px;}
+  .poster-title{font-size:16px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Materiali didattici</div>
+  <h1>Poster di <em>matematica</em></h1>
+  <p class="subhead">Regole, tabelle e grafici pronti per la stampa — usa le frecce o le miniature per sfogliare.</p>
+</header>
+
+<div class="carousel">
+  <div class="carousel-top">
+    <div class="poster-title" id="posterTitle"></div>
+    <div class="poster-count" id="posterCount"></div>
+  </div>
+
+  <div class="viewer">
+    <button class="nav-btn prev" id="prevBtn" aria-label="Poster precedente">&#8249;</button>
+    <a class="preview-link" id="previewLink" target="_blank" rel="noopener">
+      <img class="preview-img" id="previewImg" alt="">
+    </a>
+    <span class="open-hint">apri il PDF a schermo intero ↗</span>
+    <button class="nav-btn next" id="nextBtn" aria-label="Poster successivo">&#8250;</button>
+  </div>
+
+  <div class="controls-row">
+    <div class="dots" id="dots"></div>
+    <a class="download-link" id="downloadLink" href="#" download>Scarica PDF ↓</a>
+  </div>
+
+  <div class="thumb-strip" id="thumbStrip"></div>
+</div>
+
+<footer>CNR-IBE · materiali didattici in formato A3, pronti per la stampa</footer>
+
+<script>
+// Ogni poster: title, pdf, anteprima grande (preview), miniatura nav (thumb) — tutti relativi alla cartella "posters/"
+const posters = [
+  { title: "Disequazioni frazionarie", pdf: "posters/poster_disequazioni_frazionarie.pdf", preview: "posters/previews/poster_disequazioni_frazionarie.png", thumb: "posters/thumbs/poster_disequazioni_frazionarie.png" },
+  { title: "Piano cartesiano — retta e parabola", pdf: "posters/poster_piano_cartesiano.pdf", preview: "posters/previews/poster_piano_cartesiano.png", thumb: "posters/thumbs/poster_piano_cartesiano.png" },
+  { title: "Piano cartesiano e la retta", pdf: "posters/poster_piano_cartesiano_retta.pdf", preview: "posters/previews/poster_piano_cartesiano_retta.png", thumb: "posters/thumbs/poster_piano_cartesiano_retta.png" },
+  { title: "I radicali", pdf: "posters/poster_radicali.pdf", preview: "posters/previews/poster_radicali.png", thumb: "posters/thumbs/poster_radicali.png" },
+  { title: "Piano cartesiano ...e parabola (segni di a, b, c)", pdf: "posters/poster_piano_cartesiano_parabola_segni.pdf", preview: "posters/previews/poster_piano_cartesiano_parabola_segni.png", thumb: "posters/thumbs/poster_piano_cartesiano_parabola_segni.png" },
+  { title: "M.C.M. in equazioni e disequazioni frazionarie", pdf: "posters/poster_mcm_equazioni_disequazioni.pdf", preview: "posters/previews/poster_mcm_equazioni_disequazioni.png", thumb: "posters/thumbs/poster_mcm_equazioni_disequazioni.png" }
+];
+
+let current = 0;
+
+const previewImg = document.getElementById('previewImg');
+const previewLink = document.getElementById('previewLink');
+const titleEl = document.getElementById('posterTitle');
+const countEl = document.getElementById('posterCount');
+const dotsEl = document.getElementById('dots');
+const thumbStrip = document.getElementById('thumbStrip');
+const downloadLink = document.getElementById('downloadLink');
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  posters.forEach((p, i) => {
+    const b = document.createElement('button');
+    b.className = 'dot' + (i === current ? ' active' : '');
+    b.setAttribute('aria-label', 'Vai al poster ' + (i+1));
+    b.addEventListener('click', () => show(i));
+    dotsEl.appendChild(b);
+  });
+}
+
+function buildThumbs(){
+  thumbStrip.innerHTML = '';
+  posters.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'thumb-item' + (i === current ? ' active' : '');
+    const img = document.createElement('img');
+    img.src = p.thumb;
+    img.alt = p.title;
+    img.loading = 'lazy';
+    div.appendChild(img);
+    div.addEventListener('click', () => show(i));
+    thumbStrip.appendChild(div);
+  });
+}
+
+function show(i){
+  current = (i + posters.length) % posters.length;
+  const p = posters[current];
+  previewImg.src = p.preview;
+  previewImg.alt = p.title;
+  previewLink.href = p.pdf;
+  titleEl.textContent = p.title;
+  countEl.textContent = (current + 1) + ' / ' + posters.length;
+  downloadLink.href = p.pdf;
+  downloadLink.setAttribute('download', p.pdf.split('/').pop());
+
+  [...dotsEl.children].forEach((d, idx) => d.classList.toggle('active', idx === current));
+  [...thumbStrip.children].forEach((t, idx) => t.classList.toggle('active', idx === current));
+  const activeThumb = thumbStrip.children[current];
+  if (activeThumb) activeThumb.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+}
+
+document.getElementById('prevBtn').addEventListener('click', () => show(current - 1));
+document.getElementById('nextBtn').addEventListener('click', () => show(current + 1));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') show(current - 1);
+  if (e.key === 'ArrowRight') show(current + 1);
+});
+
+buildDots();
+buildThumbs();
+show(0);
+</script>
+
+</body>
+</html>
